@@ -69,7 +69,7 @@ class ExtractFn:
 
 
 extract_fns_type = List[ExtractFn]
-extract_fns_user_type = extract_fns_dict_type | extract_fns_type
+extract_fns_user_type = Union[extract_fns_dict_type, extract_fns_type]
 
 
 class ExtractCtx:
@@ -539,10 +539,10 @@ def extract_all_partitions(dump_dir: str, ctx: ExtractCtx):
     while partitions:
         with ProcessPoolExecutor() as exe:
             for partition in partitions:
-                if partition in normal_partitions:
-                    fn = extract_partition
-                else:
+                if partition in firmware_partitions:
                     fn = extract_firmware_partition
+                else:
+                    fn = extract_partition
 
                 exe.submit(fn, partition, dump_dir)
 
